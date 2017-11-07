@@ -1,0 +1,23 @@
+#cloud-config
+coreos:
+  units:
+    - name: docker.service
+      drop-ins:
+        - name: 30-increase-ulimit.conf
+          content: |
+            [Service]
+            LimitMEMLOCK=infinity
+            LimitNOFILE=infinity
+            LimitNPROC=infinity
+    - name: "echoip.service"
+      command: "start"
+      content: |
+        [Unit]
+        Description=Start
+        Author=Dima Leonenko
+
+        [Service]
+        Restart=always
+        ExecPre=-/usr/bin/docker rm -f echoip
+        ExecStart=/usr/bin/docker run --name echoip -p 9999:9999 melco/go-tcp-morse-echoip:1.0
+        ExecStop=/usr/bin/docker rm -f echoip

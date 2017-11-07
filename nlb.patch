@@ -1,0 +1,60 @@
+diff --git a/aws/resource_aws_lb_target_group.go b/aws/resource_aws_lb_target_group.go
+index 9f2e1980..d2b74af0 100644
+--- a/aws/resource_aws_lb_target_group.go
++++ b/aws/resource_aws_lb_target_group.go
+@@ -126,13 +126,6 @@ func resourceAwsLbTargetGroup() *schema.Resource {
+ 							Default:  30,
+ 						},
+ 
+-						"path": {
+-							Type:         schema.TypeString,
+-							Optional:     true,
+-							Default:      "/",
+-							ValidateFunc: validateAwsLbTargetGroupHealthCheckPath,
+-						},
+-
+ 						"port": {
+ 							Type:         schema.TypeString,
+ 							Optional:     true,
+@@ -410,11 +403,11 @@ func validateAwsLbTargetGroupHealthCheckTimeout(v interface{}, k string) (ws []s
+ 
+ func validateAwsLbTargetGroupHealthCheckProtocol(v interface{}, k string) (ws []string, errors []error) {
+ 	value := strings.ToLower(v.(string))
+-	if value == "http" || value == "https" {
++	if value == "http" || value == "https" || value == "tcp" {
+ 		return
+ 	}
+ 
+-	errors = append(errors, fmt.Errorf("%q must be either %q or %q", k, "HTTP", "HTTPS"))
++	errors = append(errors, fmt.Errorf("%q must be either %q, %q or %q", k, "HTTP", "HTTPS", "TCP"))
+ 	return
+ }
+ 
+@@ -428,11 +421,11 @@ func validateAwsLbTargetGroupPort(v interface{}, k string) (ws []string, errors
+ 
+ func validateAwsLbTargetGroupProtocol(v interface{}, k string) (ws []string, errors []error) {
+ 	protocol := strings.ToLower(v.(string))
+-	if protocol == "http" || protocol == "https" {
++	if protocol == "http" || protocol == "https" || protocol == "tcp" {
+ 		return
+ 	}
+ 
+-	errors = append(errors, fmt.Errorf("%q must be either %q or %q", k, "HTTP", "HTTPS"))
++	errors = append(errors, fmt.Errorf("%q must be either %q, %q or %q", k, "HTTP", "HTTPS", "TCP"))
+ 	return
+ }
+ 
+@@ -488,13 +481,10 @@ func flattenAwsLbTargetGroupResource(d *schema.ResourceData, meta interface{}, t
+ 
+ 	healthCheck := make(map[string]interface{})
+ 	healthCheck["interval"] = *targetGroup.HealthCheckIntervalSeconds
+-	healthCheck["path"] = *targetGroup.HealthCheckPath
+-	healthCheck["port"] = *targetGroup.HealthCheckPort
+ 	healthCheck["protocol"] = *targetGroup.HealthCheckProtocol
+ 	healthCheck["timeout"] = *targetGroup.HealthCheckTimeoutSeconds
+ 	healthCheck["healthy_threshold"] = *targetGroup.HealthyThresholdCount
+ 	healthCheck["unhealthy_threshold"] = *targetGroup.UnhealthyThresholdCount
+-	healthCheck["matcher"] = *targetGroup.Matcher.HttpCode
+ 	d.Set("health_check", []interface{}{healthCheck})
+ 
+ 	attrResp, err := elbconn.DescribeTargetGroupAttributes(&elbv2.DescribeTargetGroupAttributesInput{
