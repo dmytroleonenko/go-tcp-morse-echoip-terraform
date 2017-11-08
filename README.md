@@ -60,6 +60,8 @@ Apply complete! Resources: XX added, 0 changed, 0 destroyed.
 * CoreOS clustering for better upgrade strategies
 * Better container deployment mechanism
 
+## Credits
+Based on https://github.com/kung-foo/multiregion-terraform initially
 
 [1]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions
 [2]: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-latency
