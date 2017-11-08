@@ -55,6 +55,12 @@ data.aws_availability_zones.available: Refreshing state...
 Apply complete! Resources: XX added, 0 changed, 0 destroyed.
 ```
 
+## Potential improvements
+* Route53 healthcheck to exclude unhealthy region (no instances can serve the traffic in a regiono)
+* CoreOS clustering for better upgrade strategies
+* Better container deployment mechanism
+
+
 [1]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions
 [2]: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-latency
 [3]: https://www.terraform.io/docs/providers/aws/#shared-credentials-file
